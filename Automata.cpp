@@ -82,17 +82,17 @@ void Automata::print() {
     }
     for (auto & State : States) {
         cout<<"State "<< State.first <<":"<<endl;
-        for (auto i = State.second.incomingRead.begin(); i != State.second.incomingRead.end(); ++i) {
-            cout<< "  " << i->first << " --?" << i->second << "--> " << State.first <<endl;
+        for (auto & i : State.second.incomingRead) {
+            cout<< "  " << i.first << " --?" << i.second << "--> " << State.first <<endl;
         }
-        for (auto i = State.second.incomingWrite.begin(); i != State.second.incomingWrite.end(); ++i) {
-            cout<< "  " << i->first << " --!" << i->second << "--> " << State.first <<endl;
+        for (auto & i : State.second.incomingWrite) {
+            cout<< "  " << i.first << " --!" << i.second << "--> " << State.first <<endl;
         }
-        for (auto i = State.second.outgoingRead.begin(); i != State.second.outgoingRead.end(); ++i) {
-            cout<< "  " << State.first << " --?" << i->second << "--> " << i->first <<endl;
+        for (auto & i : State.second.outgoingRead) {
+            cout<< "  " << State.first << " --?" << i.second << "--> " << i.first <<endl;
         }
-        for (auto i = State.second.outgoingWrite.begin(); i != State.second.outgoingWrite.end(); ++i) {
-            cout<< "  " << State.first << " --!" << i->second << "--> " << i->first <<endl;
+        for (auto & i : State.second.outgoingWrite) {
+            cout<< "  " << State.first << " --!" << i.second << "--> " << i.first <<endl;
         }
     }
 
@@ -109,4 +109,27 @@ set<int> Automata::getFinalStates() {
 
 State Automata::getState(int id) {
     return States[id];
+}
+
+set<int> Automata::getReachableStates() {
+    set<int> ans,oldAns;
+    set<char> lettersSeen;
+    ans = initialStates;
+    while( ans != oldAns ){
+        oldAns = ans;
+        for (int State : oldAns) {
+            for (auto & i : States[State].outgoingWrite){
+                lettersSeen.insert(i.second);
+                ans.insert(i.first);
+            }
+        }
+        for (int State : oldAns) {
+            for (auto & i : States[State].outgoingRead){
+                if( lettersSeen.find(i.second)!=lettersSeen.end() ){
+                    ans.insert(i.first);
+                }
+            }
+        }
+    }
+    return ans;
 }

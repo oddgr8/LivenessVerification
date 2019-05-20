@@ -36,31 +36,35 @@ int main(){
         A.addWriteTransition(src, dst, letter);
     }
     A.print();
+    for ( int State : A.getReachableStates()){
+        cout<<State<<" ";
+    }
+    cout<<endl;
 
-    int ds;//Delete States
-    cin>>ds;
-    for (int i = 0; i < ds; ++i) {
-        int s;
-        cin>>s;
-        A.deleteState(s);
-    }
-    A.print();
-
-    int drt,dwt;//Delete Transitions
-    cin>>drt>>dwt;
-    for (int j = 0; j < drt; ++j) {
-        int src, dst;
-        cin>>src>>dst;
-        char letter;
-        cin>>letter;
-        A.deleteReadTransition(src, dst, letter);
-    }
-    for (int j = 0; j < dwt; ++j) {
-        int src, dst;
-        cin>>src>>dst;
-        char letter;
-        cin>>letter;
-        A.deleteWriteTransition(src, dst, letter);
-    }
-    A.print();
+//    int ds;//Delete States
+//    cin>>ds;
+//    for (int i = 0; i < ds; ++i) {
+//        int s;
+//        cin>>s;
+//        A.deleteState(s);
+//    }
+//    A.print();
+//
+//    int drt,dwt;//Delete Transitions
+//    cin>>drt>>dwt;
+//    for (int j = 0; j < drt; ++j) {
+//        int src, dst;
+//        cin>>src>>dst;
+//        char letter;
+//        cin>>letter;
+//        A.deleteReadTransition(src, dst, letter);
+//    }
+//    for (int j = 0; j < dwt; ++j) {
+//        int src, dst;
+//        cin>>src>>dst;
+//        char letter;
+//        cin>>letter;
+//        A.deleteWriteTransition(src, dst, letter);
+//    }
+//    A.print();
 }

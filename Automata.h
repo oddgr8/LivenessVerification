@@ -24,7 +24,7 @@ public:
     set<int> getInitialStates();
     set<int> getFinalStates();
     State getState(int id);
-//TODO    set State> getReachableStates();
+    set<int> getReachableStates();
     void print();
 };
 
