@@ -133,3 +133,123 @@ set<int> Automata::getReachableStates() {
     }
     return ans;
 }
+
+bool Automata::isLive() {
+    set<int> reachable = getReachableStates();
+    int m = reachable.size();
+    set<int> allStates;
+    for (auto & i : States){
+        allStates.insert(i.first);
+    }
+    set<int> C[m+1], oldC[m+1];
+    for (int i = 1; i < m+1; ++i) {
+        C[i] = allStates;
+    }
+    while(true){
+        for (int j = 1; j < m+1; ++j) {
+            oldC[j]=C[j];
+        }
+
+        //C = intersection of post+_oldC and pre*_oldC
+        set<int> R[m+1], oldR[m+1];
+        int count = 1;
+        for (auto & i : reachable){
+            R[count].insert(i);
+        }
+        //Now we have R = ({s1},{s2}...{sm})
+        {//Taking post once
+            for (int i = 1; i < m+1; ++i) {
+                oldR[i]=R[i];
+            }
+
+            set<char> lettersSeen;
+            for (int k = 1; k < m+1; ++k) {
+                for ( int i : oldR[k] ){
+                    for ( auto & j : States[i].outgoingWrite){
+                        if( oldR[k].find(j.first)!=oldR[k].end() ){
+                            lettersSeen.insert(j.second);
+                        }
+                    }
+                }
+            }
+            //lettersSeen is initialized now
+            for (int k = 1; k < m+1; ++k) {
+                for ( int i : oldR[k] ){
+                    for (auto & j : States[i].outgoingWrite){
+                        R[k].insert(j.first);
+                    }
+                    for (auto & j : States[i].outgoingRead){
+                        if( lettersSeen.find(j.second)!=lettersSeen.end() ){
+                            R[k].insert(j.first);
+                        }
+                    }
+                }
+            }
+            //Now, R is post(OldR)
+
+            for (int j = 1; j < m+1; ++j) {
+                R[j].insert(oldR[j].begin(),oldR[j].end());
+            }
+            // R = R union oldR
+        }
+        while(true){
+            for (int i = 1; i < m+1; ++i) {
+                oldR[i]=R[i];
+            }
+
+            set<char> lettersSeen;
+            for (int k = 1; k < m+1; ++k) {
+                for ( int i : oldR[k] ){
+                    for ( auto & j : States[i].outgoingWrite){
+                        if( oldR[k].find(j.first)!=oldR[k].end() ){
+                            lettersSeen.insert(j.second);
+                        }
+                    }
+                }
+            }
+            //lettersSeen is initialized now
+            for (int k = 1; k < m+1; ++k) {
+                for ( int i : oldR[k] ){
+                    for (auto & j : States[i].outgoingWrite){
+                        R[k].insert(j.first);
+                    }
+                    for (auto & j : States[i].outgoingRead){
+                        if( lettersSeen.find(j.second)!=lettersSeen.end() ){
+                            R[k].insert(j.first);
+                        }
+                    }
+                }
+            }
+            //Now, R is post(OldR)
+
+            for (int j = 1; j < m+1; ++j) {
+                R[j].insert(oldR[j].begin(),oldR[j].end());
+            }
+            // R = R union oldR
+
+
+            for (int j = 1; j < m+1; ++j) {
+                if(oldR[j]!=R[j]){
+                    continue;
+                }
+            }
+            break;
+        }
+        //TODO compute pre*
+        //TODO C = post+ int pre*
+
+        //Check if fixed point is reached
+        for (int i = 1; i < m+1; ++i) {
+            if (C[i] != oldC[i]){
+                continue;
+            }
+        }
+        break;
+    }
+    for (int k = 1; k < m+1; ++k) {
+        if( !C[k].empty() ){
+            return true;
+        }
+    }
+    return false;
+}

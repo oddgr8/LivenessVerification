@@ -26,7 +26,9 @@ public:
     State getState(int id);
     set<int> getReachableStates();
     void print();
+    bool isLive();
 };
+
 
 
 #endif //LIVENESSVERIFICATION_AUTOMATA_H
