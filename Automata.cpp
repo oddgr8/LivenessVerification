@@ -4,6 +4,7 @@
 
 #include "Automata.h"
 #include <utility>
+#include <algorithm>
 #include <iostream>
 using namespace std;
 
@@ -135,35 +136,54 @@ set<int> Automata::getReachableStates() {
 }
 
 bool Automata::isLive() {
+
     set<int> reachable = getReachableStates();
-    int m = reachable.size();
+    bool flag = false;
+    for (int i : reachable){
+        if(finalStates.find(i)!=finalStates.end()){
+            flag = true;
+            break;
+        }
+    }
+
+    if(!flag){
+        return false;
+    }
+
+    int m = reachable.size() + 1;
     set<int> allStates;
     for (auto & i : States){
         allStates.insert(i.first);
     }
-    set<int> C[m+1], oldC[m+1];
-    for (int i = 1; i < m+1; ++i) {
+    set<int> C[m];
+    set<int> oldC[m];
+    for (int i = 1; i < m; ++i) {
         C[i] = allStates;
     }
     while(true){
-        for (int j = 1; j < m+1; ++j) {
+        for (int j = 1; j < m; ++j) {
             oldC[j]=C[j];
         }
 
         //C = intersection of post+_oldC and pre*_oldC
-        set<int> R[m+1], oldR[m+1];
+        set<int> R[m], oldR[m], S[m], oldS[m];//R is used for computing post. S is used for computing pre
         int count = 1;
-        for (auto & i : reachable){
-            R[count].insert(i);
+        for (int i : reachable){
+            if( oldC[count].find(i)!=oldC[count].end() ){
+                R[count].insert(i);
+                S[count].insert(i);
+            }
+            count++;
         }
-        //Now we have R = ({s1},{s2}...{sm})
+        //Now we have R,S = ({s1},{s2}...{sm})
         {//Taking post once
-            for (int i = 1; i < m+1; ++i) {
+            for (int i = 1; i < m; ++i) {
                 oldR[i]=R[i];
+                R[i].clear();
             }
 
             set<char> lettersSeen;
-            for (int k = 1; k < m+1; ++k) {
+            for (int k = 1; k < m; ++k) {
                 for ( int i : oldR[k] ){
                     for ( auto & j : States[i].outgoingWrite){
                         if( oldR[k].find(j.first)!=oldR[k].end() ){
@@ -173,10 +193,12 @@ bool Automata::isLive() {
                 }
             }
             //lettersSeen is initialized now
-            for (int k = 1; k < m+1; ++k) {
+            for (int k = 1; k < m; ++k) {
                 for ( int i : oldR[k] ){
                     for (auto & j : States[i].outgoingWrite){
-                        R[k].insert(j.first);
+                        if( C[k].find(j.first)!=C[k].end() ){
+                            R[k].insert(j.first);
+                        }
                     }
                     for (auto & j : States[i].outgoingRead){
                         if( lettersSeen.find(j.second)!=lettersSeen.end() ){
@@ -185,20 +207,16 @@ bool Automata::isLive() {
                     }
                 }
             }
-            //Now, R is post(OldR)
+            //Now, R = post(OldR)
 
-            for (int j = 1; j < m+1; ++j) {
-                R[j].insert(oldR[j].begin(),oldR[j].end());
-            }
-            // R = R union oldR
         }
-        while(true){
-            for (int i = 1; i < m+1; ++i) {
+        while(true){//computing post*(post(X))
+            for (int i = 1; i < m; ++i) {
                 oldR[i]=R[i];
             }
 
             set<char> lettersSeen;
-            for (int k = 1; k < m+1; ++k) {
+            for (int k = 1; k < m; ++k) {
                 for ( int i : oldR[k] ){
                     for ( auto & j : States[i].outgoingWrite){
                         if( oldR[k].find(j.first)!=oldR[k].end() ){
@@ -208,10 +226,12 @@ bool Automata::isLive() {
                 }
             }
             //lettersSeen is initialized now
-            for (int k = 1; k < m+1; ++k) {
+            for (int k = 1; k < m; ++k) {
                 for ( int i : oldR[k] ){
                     for (auto & j : States[i].outgoingWrite){
-                        R[k].insert(j.first);
+                        if( C[k].find(j.first)!=C[k].end() ){
+                            R[k].insert(j.first);
+                        }
                     }
                     for (auto & j : States[i].outgoingRead){
                         if( lettersSeen.find(j.second)!=lettersSeen.end() ){
@@ -220,33 +240,101 @@ bool Automata::isLive() {
                     }
                 }
             }
-            //Now, R is post(OldR)
-
-            for (int j = 1; j < m+1; ++j) {
-                R[j].insert(oldR[j].begin(),oldR[j].end());
-            }
-            // R = R union oldR
+            //Now, R = R union post(OldR)
 
 
-            for (int j = 1; j < m+1; ++j) {
-                if(oldR[j]!=R[j]){
-                    continue;
+            bool notequal = false;
+            for (int j = 1; j < m; ++j) {
+                for ( int l : R[j] ){
+                    if( oldR[j].find(l)==oldR[j].end() ){
+                        notequal = true;
+                        break;
+                    }
+                }
+                if(notequal){
+                    break;
                 }
             }
-            break;
+            if(!notequal){
+                break;
+            }
         }
-        //TODO compute pre*
-        //TODO C = post+ int pre*
+
+        while(true){//computing pre* of X
+            for (int i = 1; i < m; ++i){
+                oldS[i]=S[i];
+            }
+
+            set<char> lettersSeen;
+            for (int k = 1; k < m; ++k) {
+                for ( int i : oldS[k] ){
+                    for ( auto & j : States[i].outgoingWrite){
+                        if( oldS[k].find(j.first)!=oldS[k].end() ){
+                            lettersSeen.insert(j.second);
+                        }
+                    }
+                }
+            }
+            //lettersSeen is initialized now
+            for (int k = 1; k < m; ++k) {
+                for (int i : oldS[k]){
+                    for ( auto & j : States[i].incomingWrite){
+                        if( C[k].find(j.first)!=C[k].end() ){
+                            S[k].insert(j.first);
+                        }
+                    }
+                    for (auto & j : States[i].incomingRead){
+                        if( lettersSeen.find(j.second)!=lettersSeen.end() ){
+                            S[k].insert(j.first);
+                        }
+                    }
+                }
+            }
+            //Now S is S union pre(oldS)
+
+            bool notequal = false;
+            for (int j = 1; j< m; j++){
+                for ( int l : S[j] ){
+                    if( oldS[j].find(l)==oldS[j].end() ){
+                        notequal = true;
+                    }
+                }
+                if (notequal){
+                    break;
+                }
+            }
+            if(!notequal){
+                break;
+            }
+        }
+        //R is post+
+        //S is pre*
+        for (int l = 1; l < m; ++l) {
+            C[l].clear();
+            for (int i : R[l]){
+                if( S[l].find(i)!=S[l].end() ){
+                    C[l].insert(i);
+                }
+            }
+        }
 
         //Check if fixed point is reached
-        for (int i = 1; i < m+1; ++i) {
-            if (C[i] != oldC[i]){
-                continue;
+        bool notequal = false;
+        for (int i = 1; i < m; ++i) {
+            for( int l : oldC[i]){
+                if(C[i].find(l) == C[i].end()){
+                    notequal = true;
+                }
+            }
+            if (notequal){
+                break;
             }
         }
-        break;
+        if(!notequal){
+            break;
+        }
     }
-    for (int k = 1; k < m+1; ++k) {
+    for (int k = 1; k < m; ++k) {
         if( !C[k].empty() ){
             return true;
         }

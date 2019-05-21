@@ -3,4 +3,4 @@ project(LivenessVerification)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(testReachability testReachability.cpp)
+add_executable(testMain testMain.cpp)
