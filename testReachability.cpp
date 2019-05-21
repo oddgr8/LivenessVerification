@@ -67,4 +67,11 @@ int main(){
 //        A.deleteWriteTransition(src, dst, letter);
 //    }
 //    A.print();
+    if(A.isLive()){
+        cout<<"Yes"<<endl;
+    }
+    else{
+        cout<<"No"<<endl;
+    }
+    return 0;
 }
