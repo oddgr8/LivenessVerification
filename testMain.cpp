@@ -2,41 +2,43 @@
 // Created by onkar on 17/5/19.
 //
 #include "Automata.cpp"
+#include <string>
 #include <iostream>
 using namespace std;
 
 int main(){
     Automata A;
-    int I,F;
-    cin>>I>>F;//Initial and Final States
-    for (int count = 0; count < I; ++count) {
-        int id;
-        cin>>id;
-        A.addInitialState(id);
+    string s;
+    bool atInitial = true;
+    while(cin>>s){
+        if(s=="input_over"){
+            break;
+        }
+        if(s.find(',')==string::npos){
+            if(atInitial){
+                A.addInitialState(s);
+            }
+            else{
+                A.addFinalState(s);
+            }
+        }
+        else{
+            atInitial = false;
+            int c = s.find(','), t = s.find("->");
+            string src = s.substr(c+1,t-c-1);
+            string dst = s.substr(t+2);
+            if(s[0]=='!'){
+                A.addWriteTransition(src, dst, s[1]);
+            }
+            else if(s[0]=='?'){
+                A.addReadTransition(src, dst, s[1]);
+            }
+        }
     }
-    for (int count = 0; count < F; ++count) {
-        int id;
-        cin>>id;
-        A.addFinalState(id);
-    }
-    int rt,wt;//Read and write transitions
-    cin>>rt>>wt;
-    for (int count = 0; count < rt; ++count) {
-        int src, dst;
-        cin>>src>>dst;
-        char letter;
-        cin>>letter;
-        A.addReadTransition(src, dst, letter);
-    }
-    for (int count = 0; count < wt; ++count) {
-        int src, dst;
-        cin>>src>>dst;
-        char letter;
-        cin>>letter;
-        A.addWriteTransition(src, dst, letter);
-    }
+
     A.print();
-    for ( int State : A.getReachableStates()){
+    cout<<"Reachable States are :";
+    for ( auto & State : A.getReachableStates()){
         cout<<State<<" ";
     }
     cout<<endl;
@@ -67,6 +69,8 @@ int main(){
 //        A.deleteWriteTransition(src, dst, letter);
 //    }
 //    A.print();
+
+    cout<<"Is A Live?"<<endl;
     if(A.isLive()){
         cout<<"Yes"<<endl;
     }

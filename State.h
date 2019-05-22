@@ -10,7 +10,7 @@ using namespace std;
 
 class State {
 public:
-    set< pair<int,char> > incomingWrite, outgoingWrite, incomingRead, outgoingRead;
+    set< pair<string,char> > incomingWrite, outgoingWrite, incomingRead, outgoingRead;
 
 };
 

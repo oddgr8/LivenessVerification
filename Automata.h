@@ -3,6 +3,7 @@
 //
 #include <map>
 #include <set>
+#include <string>
 #include "State.cpp"
 using namespace std;
 
@@ -11,20 +12,20 @@ using namespace std;
 
 
 class Automata {
-    map<int, State> States;//int is the id itself
-    set<int> initialStates, finalStates;
+    map<string, State> States;//int is the id itself
+    set<string> initialStates, finalStates;
 public:
-    void addInitialState(int id);//Add empty state if already does not exist
-    void addFinalState(int id);//Add empty set if already does not exist
-    void addWriteTransition(int src, int dst, char letter);
-    void addReadTransition(int src, int dst, char letter);
-    bool deleteState(int id);//Remove State and all its transitions
-    bool deleteReadTransition(int src, int dst, char letter);
-    bool deleteWriteTransition(int src, int dst, char letter);
-    set<int> getInitialStates();
-    set<int> getFinalStates();
-    State getState(int id);
-    set<int> getReachableStates();
+    void addInitialState(const string& id);//Add empty state if already does not exist
+    void addFinalState(const string& id);//Add empty set if already does not exist
+    void addWriteTransition(const string& src, const string& dst, char letter);
+    void addReadTransition(const string& src, const string& dst, char letter);
+    bool deleteState(const string& id);//Remove State and all its transitions
+    bool deleteReadTransition(const string& src, const string& dst, char letter);
+    bool deleteWriteTransition(const string& src, const string& dst, char letter);
+    set<string> getInitialStates();
+    set<string> getFinalStates();
+    State getState(const string& id);
+    set<string> getReachableStates();
     void print();
     bool isLive();
 };

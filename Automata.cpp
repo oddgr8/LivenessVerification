@@ -9,31 +9,31 @@
 using namespace std;
 
 
-void Automata::addInitialState(int id) {
+void Automata::addInitialState(const string& id) {
     if( States.find(id)==States.end() ){
         States.emplace(id,State());
     }
     initialStates.insert(id);
 }
 
-void Automata::addFinalState(int id) {
+void Automata::addFinalState(const string& id) {
     if( States.find(id)==States.end() ){
         States.emplace(id,State());
     }
     finalStates.insert(id);
 }
 
-void Automata::addWriteTransition(int src, int dst, char letter) {
+void Automata::addWriteTransition(const string& src, const string& dst, char letter) {
     States[src].outgoingWrite.insert(make_pair(dst, letter));
     States[dst].incomingWrite.insert(make_pair(src, letter));
 }
 
-void Automata::addReadTransition(int src, int dst, char letter) {
+void Automata::addReadTransition(const string& src, const string& dst, char letter) {
     States[src].outgoingRead.insert(make_pair(dst, letter));
     States[dst].incomingRead.insert(make_pair(src, letter));
 }
 
-bool Automata::deleteReadTransition(int src, int dst, char letter) {
+bool Automata::deleteReadTransition(const string& src, const string& dst, char letter) {
     if( States.find(src)==States.end() || States.find(dst)==States.end() ){
         return false;
     }
@@ -42,7 +42,7 @@ bool Automata::deleteReadTransition(int src, int dst, char letter) {
     return true;
 }
 
-bool Automata::deleteWriteTransition(int src, int dst, char letter) {
+bool Automata::deleteWriteTransition(const string& src, const string& dst, char letter) {
     if( States.find(src)==States.end() || States.find(dst)==States.end() ){
         return false;
     }
@@ -51,7 +51,7 @@ bool Automata::deleteWriteTransition(int src, int dst, char letter) {
     return true;
 }
 
-bool Automata::deleteState(int id) {
+bool Automata::deleteState(const string& id) {
     if( States.find(id)==States.end() ){
         return false;
     }
@@ -74,11 +74,11 @@ bool Automata::deleteState(int id) {
 void Automata::print() {
 
     cout<<"Initial States are :"<<endl;
-    for (int initialState : initialStates) {
+    for (auto & initialState : initialStates) {
         cout<< "  " << initialState <<endl;
     }
     cout<<"Final States are :"<<endl;
-    for (int finalState : finalStates) {
+    for (auto & finalState : finalStates) {
         cout<< "  " << finalState <<endl;
     }
     for (auto & State : States) {
@@ -100,31 +100,31 @@ void Automata::print() {
     cout<<"Print done"<<endl;
 }
 
-set<int> Automata::getInitialStates() {
+set<string> Automata::getInitialStates() {
     return initialStates;
 }
 
-set<int> Automata::getFinalStates() {
+set<string> Automata::getFinalStates() {
     return finalStates;
 }
 
-State Automata::getState(int id) {
+State Automata::getState(const string& id) {
     return States[id];
 }
 
-set<int> Automata::getReachableStates() {
-    set<int> ans,oldAns;
+set<string> Automata::getReachableStates() {
+    set<string> ans,oldAns;
     set<char> lettersSeen;
     ans = initialStates;
     while( ans != oldAns ){
         oldAns = ans;
-        for (int State : oldAns) {
+        for (auto & State : oldAns) {
             for (auto & i : States[State].outgoingWrite){
                 lettersSeen.insert(i.second);
                 ans.insert(i.first);
             }
         }
-        for (int State : oldAns) {
+        for (auto & State : oldAns) {
             for (auto & i : States[State].outgoingRead){
                 if( lettersSeen.find(i.second)!=lettersSeen.end() ){
                     ans.insert(i.first);
@@ -137,9 +137,9 @@ set<int> Automata::getReachableStates() {
 
 bool Automata::isLive() {
 
-    set<int> reachable = getReachableStates();
+    set<string> reachable = getReachableStates();
     bool flag = false;
-    for (int i : reachable){
+    for (auto & i : reachable){
         if(finalStates.find(i)!=finalStates.end()){
             flag = true;
             break;
@@ -151,12 +151,12 @@ bool Automata::isLive() {
     }
 
     int m = reachable.size() + 1;
-    set<int> allStates;
+    set<string> allStates;
     for (auto & i : States){
         allStates.insert(i.first);
     }
-    set<int> C[m];
-    set<int> oldC[m];
+    set<string> C[m];
+    set<string> oldC[m];
     for (int i = 1; i < m; ++i) {
         C[i] = allStates;
     }
@@ -166,9 +166,9 @@ bool Automata::isLive() {
         }
 
         //C = intersection of post+_oldC and pre*_oldC
-        set<int> R[m], oldR[m], S[m], oldS[m];//R is used for computing post. S is used for computing pre
+        set<string> R[m], oldR[m], S[m], oldS[m];//R is used for computing post. S is used for computing pre
         int count = 1;
-        for (int i : reachable){
+        for (auto & i : reachable){
             if( oldC[count].find(i)!=oldC[count].end() ){
                 R[count].insert(i);
                 S[count].insert(i);
@@ -184,7 +184,7 @@ bool Automata::isLive() {
 
             set<char> lettersSeen;
             for (int k = 1; k < m; ++k) {
-                for ( int i : oldR[k] ){
+                for ( auto & i : oldR[k] ){
                     for ( auto & j : States[i].outgoingWrite){
                         if( oldR[k].find(j.first)!=oldR[k].end() ){
                             lettersSeen.insert(j.second);
@@ -194,7 +194,7 @@ bool Automata::isLive() {
             }
             //lettersSeen is initialized now
             for (int k = 1; k < m; ++k) {
-                for ( int i : oldR[k] ){
+                for ( auto & i : oldR[k] ){
                     for (auto & j : States[i].outgoingWrite){
                         if( C[k].find(j.first)!=C[k].end() ){
                             R[k].insert(j.first);
@@ -217,7 +217,7 @@ bool Automata::isLive() {
 
             set<char> lettersSeen;
             for (int k = 1; k < m; ++k) {
-                for ( int i : oldR[k] ){
+                for ( auto & i : oldR[k] ){
                     for ( auto & j : States[i].outgoingWrite){
                         if( oldR[k].find(j.first)!=oldR[k].end() ){
                             lettersSeen.insert(j.second);
@@ -227,7 +227,7 @@ bool Automata::isLive() {
             }
             //lettersSeen is initialized now
             for (int k = 1; k < m; ++k) {
-                for ( int i : oldR[k] ){
+                for ( auto & i : oldR[k] ){
                     for (auto & j : States[i].outgoingWrite){
                         if( C[k].find(j.first)!=C[k].end() ){
                             R[k].insert(j.first);
@@ -245,7 +245,7 @@ bool Automata::isLive() {
 
             bool notequal = false;
             for (int j = 1; j < m; ++j) {
-                for ( int l : R[j] ){
+                for ( auto & l : R[j] ){
                     if( oldR[j].find(l)==oldR[j].end() ){
                         notequal = true;
                         break;
@@ -267,7 +267,7 @@ bool Automata::isLive() {
 
             set<char> lettersSeen;
             for (int k = 1; k < m; ++k) {
-                for ( int i : oldS[k] ){
+                for ( auto & i : oldS[k] ){
                     for ( auto & j : States[i].outgoingWrite){
                         if( oldS[k].find(j.first)!=oldS[k].end() ){
                             lettersSeen.insert(j.second);
@@ -277,7 +277,7 @@ bool Automata::isLive() {
             }
             //lettersSeen is initialized now
             for (int k = 1; k < m; ++k) {
-                for (int i : oldS[k]){
+                for (auto & i : oldS[k]){
                     for ( auto & j : States[i].incomingWrite){
                         if( C[k].find(j.first)!=C[k].end() ){
                             S[k].insert(j.first);
@@ -294,7 +294,7 @@ bool Automata::isLive() {
 
             bool notequal = false;
             for (int j = 1; j< m; j++){
-                for ( int l : S[j] ){
+                for ( auto & l : S[j] ){
                     if( oldS[j].find(l)==oldS[j].end() ){
                         notequal = true;
                     }
@@ -311,7 +311,7 @@ bool Automata::isLive() {
         //S is pre*
         for (int l = 1; l < m; ++l) {
             C[l].clear();
-            for (int i : R[l]){
+            for (auto & i : R[l]){
                 if( S[l].find(i)!=S[l].end() ){
                     C[l].insert(i);
                 }
@@ -321,7 +321,7 @@ bool Automata::isLive() {
         //Check if fixed point is reached
         bool notequal = false;
         for (int i = 1; i < m; ++i) {
-            for( int l : oldC[i]){
+            for( auto & l : oldC[i]){
                 if(C[i].find(l) == C[i].end()){
                     notequal = true;
                 }
