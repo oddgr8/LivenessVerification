@@ -8,9 +8,10 @@ using namespace std;
 
 int main(){
     Automata A;
-    string s;
-    bool atInitial = true;
-    while(cin>>s){
+    char input[100];
+    bool atInitial = true,firstInput =true, foundFinalState = false;
+    while(cin.getline(input,100)){
+        string s(input);
         if(s=="input_over"){
             break;
         }
@@ -20,6 +21,7 @@ int main(){
             }
             else{
                 A.addFinalState(s);
+                foundFinalState = true;
             }
         }
         else{
@@ -33,7 +35,14 @@ int main(){
             else if(s[0]=='?'){
                 A.addReadTransition(src, dst, s[1]);
             }
+            if(firstInput){
+                A.addInitialState(src);
+            }
         }
+        firstInput = false;
+    }
+    if(!foundFinalState){
+        A.makeAllStatesFinal();
     }
 
     A.print();
@@ -70,7 +79,7 @@ int main(){
 //    }
 //    A.print();
 
-    cout<<"Is A Live?"<<endl;
+    cout<<"Is A Live?";
     if(A.isLive()){
         cout<<"Yes"<<endl;
     }

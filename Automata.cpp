@@ -341,3 +341,9 @@ bool Automata::isLive() {
     }
     return false;
 }
+
+void Automata::makeAllStatesFinal() {
+    for(auto & i : States){
+        finalStates.insert(i.first);
+    }
+}

@@ -28,6 +28,7 @@ public:
     set<string> getReachableStates();
     void print();
     bool isLive();
+    void makeAllStatesFinal();
 };
 
 
