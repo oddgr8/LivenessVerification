@@ -4,6 +4,7 @@
 #include "Automata.cpp"
 #include <string>
 #include <iostream>
+#include <ctime>
 using namespace std;
 
 int main(){
@@ -45,40 +46,16 @@ int main(){
         A.makeAllStatesFinal();
     }
 
-    A.print();
-    cout<<"Reachable States are :";
-    for ( auto & State : A.getReachableStates()){
-        cout<<State<<" ";
-    }
-    cout<<endl;
-
-//    int ds;//Delete States
-//    cin>>ds;
-//    for (int i = 0; i < ds; ++i) {
-//        int s;
-//        cin>>s;
-//        A.deleteState(s);
-//    }
 //    A.print();
-//
-//    int drt,dwt;//Delete Transitions
-//    cin>>drt>>dwt;
-//    for (int j = 0; j < drt; ++j) {
-//        int src, dst;
-//        cin>>src>>dst;
-//        char letter;
-//        cin>>letter;
-//        A.deleteReadTransition(src, dst, letter);
+//    cout<<"Reachable States are :";
+//    for ( auto & State : A.getReachableStates()){
+//        cout<<State<<" ";
 //    }
-//    for (int j = 0; j < dwt; ++j) {
-//        int src, dst;
-//        cin>>src>>dst;
-//        char letter;
-//        cin>>letter;
-//        A.deleteWriteTransition(src, dst, letter);
-//    }
-//    A.print();
+//    cout<<endl;
+    A.printSize();
 
+    time_t time1,time2;
+    time(&time1);
     cout<<"Is A Live?";
     if(A.isLive()){
         cout<<"Yes"<<endl;
@@ -86,5 +63,7 @@ int main(){
     else{
         cout<<"No"<<endl;
     }
+    time(&time2);
+    cout<<"Time required to verify Liveness: "<<difftime(time2, time1)<<" seconds"<<endl<<endl;
     return 0;
 }

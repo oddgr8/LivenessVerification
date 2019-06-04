@@ -347,3 +347,16 @@ void Automata::makeAllStatesFinal() {
         finalStates.insert(i.first);
     }
 }
+
+void Automata::printSize() {
+    int rdTransitions=0, wrTransitions=0;
+    for (auto & State : States){
+        wrTransitions += State.second.outgoingWrite.size();
+        rdTransitions += State.second.outgoingRead.size();
+    }
+    cout<<"No. of States are: "<<States.size()<<endl;
+    cout<<"No. of initial States are: "<<initialStates.size()<<endl;
+    cout<<"No. of final States are: "<<finalStates.size()<<endl;
+    cout<<"No. of read transitions are: "<<rdTransitions<<endl;
+    cout<<"No. of write transitions are: "<<wrTransitions<<endl;
+}

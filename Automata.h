@@ -29,6 +29,8 @@ public:
     void print();
     bool isLive();
     void makeAllStatesFinal();
+
+    void printSize();
 };
 
 
