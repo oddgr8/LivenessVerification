@@ -7,6 +7,8 @@
 #include <string>
 using namespace std;
 
+const char OPENBRACKET = '(';
+const char CLOSEBRACKET = ')';
 const char TRUE = 'T';
 const char FALSE = 'F';
 const char AND = '&';
@@ -21,14 +23,18 @@ protected:
     char type;
 public:
     char getType();
+    virtual string print() = 0;
+    virtual ~FormulaTreeNode() = 0;
 };
 class TrueNode : public FormulaTreeNode{
 public:
     TrueNode();
+    string print() override;
 };
 class FalseNode : public FormulaTreeNode{
 public:
     FalseNode();
+    string print() override;
 };
 
 class VariableNode : public FormulaTreeNode{
@@ -36,32 +42,36 @@ class VariableNode : public FormulaTreeNode{
 public:
     explicit VariableNode(string name);
     string getName();
+    string print() override;
 };
 
 class NotNode : public FormulaTreeNode{
     FormulaTreeNode* child;
 public:
     explicit NotNode(FormulaTreeNode* c);
-    ~NotNode();
+    ~NotNode() override;
     FormulaTreeNode* getChild();
+    string print() override;
 };
 
 class AndNode : public FormulaTreeNode{
     FormulaTreeNode* leftChild, *rightChild;
 public:
     AndNode(FormulaTreeNode* l, FormulaTreeNode* r);
-    ~AndNode();
+    ~AndNode() override;
     FormulaTreeNode* getLeftChild();
     FormulaTreeNode* getRightChild();
+    string print() override;
 };
 
 class OrNode : public FormulaTreeNode{
     FormulaTreeNode* leftChild, *rightChild;
 public:
     OrNode(FormulaTreeNode* l, FormulaTreeNode* r);
-    ~OrNode();
+    ~OrNode() override;
     FormulaTreeNode* getLeftChild();
     FormulaTreeNode* getRightChild();
+    string print() override;
 };
 
 class ExistsNode : public FormulaTreeNode{
@@ -69,9 +79,10 @@ class ExistsNode : public FormulaTreeNode{
     FormulaTreeNode* child;
 public:
     ExistsNode(string v, FormulaTreeNode* c);
-    ~ExistsNode();
+    ~ExistsNode() override;
     string getName();
     FormulaTreeNode* getChild();
+    string print() override;
 };
 
 class ForAllNode : public FormulaTreeNode{
@@ -79,9 +90,10 @@ class ForAllNode : public FormulaTreeNode{
     FormulaTreeNode* child;
 public:
     ForAllNode(string v, FormulaTreeNode* child);
-    ~ForAllNode();
+    ~ForAllNode() override;
     string getName();
     FormulaTreeNode* getChild();
+    string print() override;
 };
 
 FormulaTreeNode* stringToTree(string expression);
@@ -89,8 +101,9 @@ FormulaTreeNode* stringToTree(string expression);
 class FormulaTree {
     FormulaTreeNode* root;
 public:
-    FormulaTree(string formula);
+    explicit FormulaTree(string formula);
     ~FormulaTree();
+    void print();
     ////TODO empty constructor that take
 };
 

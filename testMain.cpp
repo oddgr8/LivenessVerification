@@ -9,10 +9,9 @@
 using namespace std;
 
 int main(){
-    bdd_init(1000,1000);
-    bdd_setvarnum(5);
-    bdd x = bdd_ithvar(0);
-    bdd_printtable(x);
+
+    FormulaTree a("/x1((x&y|z)&(1&2&3))");
+    a.print();
 
 
 
