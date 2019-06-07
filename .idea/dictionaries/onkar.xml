@@ -2,8 +2,10 @@
   <dictionary name="onkar">
     <words>
       <w>automata</w>
+      <w>formulatree</w>
       <w>livenessverification</w>
       <w>onkar</w>
+      <w>symautomata</w>
     </words>
   </dictionary>
 </component>
