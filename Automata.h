@@ -33,6 +33,7 @@ public:
     void printSize();
 };
 
-
+//// FIXME: Optimisations
+////    use initialization lists instead of assignments
 
 #endif //LIVENESSVERIFICATION_AUTOMATA_H

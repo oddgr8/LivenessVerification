@@ -4,14 +4,15 @@
 
 #include <utility>
 
+#include <utility>
+
 //
 // Created by onkar on 7/6/19.
 //
 
 #include "FormulaTree.h"
 
-VariableNode::VariableNode(string name) : FormulaTreeNode() {
-    variableName = std::move(name);
+VariableNode::VariableNode(string name) : FormulaTreeNode(), variableName(std::move(name)) {
     type = VAR;
 }
 
@@ -38,7 +39,7 @@ FormulaTreeNode *NotNode::getChild() {
 }
 
 string NotNode::print() {
-    return string(1, NOT) + string(1, OPENBRACKET) + child->print() + string(1, CLOSEBRACKET);
+    return string(1, NOT) + string(1, OPEN_BRACKET) + child->print() + string(1, CLOSE_BRACKET);
 }
 
 AndNode::AndNode(FormulaTreeNode *l, FormulaTreeNode *r) : FormulaTreeNode() {
@@ -61,7 +62,7 @@ FormulaTreeNode *AndNode::getRightChild() {
 }
 
 string AndNode::print() {
-    return string(1, OPENBRACKET) + leftChild->print() + string(1, CLOSEBRACKET) + string(1, AND) + string(1, OPENBRACKET) + rightChild->print() + string(1, CLOSEBRACKET);
+    return string(1, OPEN_BRACKET) + leftChild->print() + string(1, CLOSE_BRACKET) + string(1, AND) + string(1, OPEN_BRACKET) + rightChild->print() + string(1, CLOSE_BRACKET);
 }
 
 OrNode::OrNode(FormulaTreeNode *l, FormulaTreeNode *r) : FormulaTreeNode() {
@@ -84,11 +85,10 @@ FormulaTreeNode *OrNode::getRightChild() {
 }
 
 string OrNode::print() {
-    return string(1, OPENBRACKET) + leftChild->print() + string(1, CLOSEBRACKET) + string(1, OR) + string(1, OPENBRACKET) + rightChild->print() + string(1, CLOSEBRACKET);
+    return string(1, OPEN_BRACKET) + leftChild->print() + string(1, CLOSE_BRACKET) + string(1, OR) + string(1, OPEN_BRACKET) + rightChild->print() + string(1, CLOSE_BRACKET);
 }
 
-ExistsNode::ExistsNode(string v, FormulaTreeNode *c) : FormulaTreeNode() {
-    variableName = std::move(v);
+ExistsNode::ExistsNode(string v, FormulaTreeNode *c) : FormulaTreeNode(), variableName(std::move(v)) {
     child = c;
     type = EXISTS;
 }
@@ -106,11 +106,10 @@ FormulaTreeNode *ExistsNode::getChild() {
 }
 
 string ExistsNode::print() {
-    return string(1, EXISTS) + variableName + string(1, OPENBRACKET) + child->print() + string(1, CLOSEBRACKET);
+    return string(1, EXISTS) + variableName + string(1, OPEN_BRACKET) + child->print() + string(1, CLOSE_BRACKET);
 }
 
-ForAllNode::ForAllNode(string v, FormulaTreeNode *c) : FormulaTreeNode() {
-    variableName = std::move(v);
+ForAllNode::ForAllNode(string v, FormulaTreeNode *c) : FormulaTreeNode(), variableName(std::move(v)) {
     child = c;
     type = FORALL;
 }
@@ -128,7 +127,7 @@ FormulaTreeNode *ForAllNode::getChild() {
 }
 
 string ForAllNode::print() {
-    return string(1, FORALL) + variableName + string(1, OPENBRACKET) + child->print() + string(1, CLOSEBRACKET);
+    return string(1, FORALL) + variableName + string(1, OPEN_BRACKET) + child->print() + string(1, CLOSE_BRACKET);
 }
 
 FormulaTree::FormulaTree(string formula) {
@@ -156,7 +155,7 @@ TrueNode::TrueNode() : FormulaTreeNode() {
 }
 
 string TrueNode::print() {
-    return string("T");
+    return string(1, TRUE);
 }
 
 FalseNode::FalseNode() : FormulaTreeNode() {
@@ -164,11 +163,11 @@ FalseNode::FalseNode() : FormulaTreeNode() {
 }
 
 string FalseNode::print() {
-    return string("F");
+    return string(1, FALSE);
 }
 
 FormulaTreeNode* stringToTree(string expression) {
-    if (expression.front() == OPENBRACKET and  expression.back() == CLOSEBRACKET) {
+    if (expression.front() == OPEN_BRACKET and  expression.back() == CLOSE_BRACKET) {
         bool flag = false;
         int count = 1;
         for (auto i : expression.substr(1)){
@@ -185,7 +184,7 @@ FormulaTreeNode* stringToTree(string expression) {
     }
     FormulaTreeNode* answer;
     if (expression.front() == EXISTS) {
-        auto i = expression.find(OPENBRACKET);
+        auto i = expression.find(OPEN_BRACKET);
         if (i == string::npos) {
             throw std::runtime_error("Empty formula given to EXISTS");
         }
@@ -193,15 +192,15 @@ FormulaTreeNode* stringToTree(string expression) {
         return answer;
     }
     if (expression.front() == FORALL) {
-        auto i = expression.find(OPENBRACKET);
+        auto i = expression.find(OPEN_BRACKET);
         if (i == string::npos) {
             throw std::runtime_error("Empty formula given to FORALL");
         }
         answer = new ForAllNode(expression.substr(1,i-1),stringToTree(expression.substr(i)));
         return answer;
     }
-    if (expression.front() == OPENBRACKET) {
-        auto i = expression.find(CLOSEBRACKET);
+    if (expression.front() == OPEN_BRACKET) {
+        auto i = expression.find(CLOSE_BRACKET);
         if (i == string::npos) {
             throw std::runtime_error("Invalid Brackets");
         }

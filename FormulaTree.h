@@ -7,8 +7,8 @@
 #include <string>
 using namespace std;
 
-const char OPENBRACKET = '(';
-const char CLOSEBRACKET = ')';
+const char OPEN_BRACKET = '(';
+const char CLOSE_BRACKET = ')';
 const char TRUE = 'T';
 const char FALSE = 'F';
 const char AND = '&';
@@ -38,7 +38,7 @@ public:
 };
 
 class VariableNode : public FormulaTreeNode{
-    string variableName;
+    const string variableName;
 public:
     explicit VariableNode(string name);
     string getName();
@@ -75,7 +75,7 @@ public:
 };
 
 class ExistsNode : public FormulaTreeNode{
-    string variableName;
+    const string variableName;
     FormulaTreeNode* child;
 public:
     ExistsNode(string v, FormulaTreeNode* c);
@@ -86,7 +86,7 @@ public:
 };
 
 class ForAllNode : public FormulaTreeNode{
-    string variableName;
+    const string variableName;
     FormulaTreeNode* child;
 public:
     ForAllNode(string v, FormulaTreeNode* child);
@@ -99,12 +99,11 @@ public:
 FormulaTreeNode* stringToTree(string expression);
 
 class FormulaTree {
-    FormulaTreeNode* root;
 public:
-    explicit FormulaTree(string formula);
+    FormulaTreeNode* root;
+    FormulaTree(string formula);
     ~FormulaTree();
     void print();
-    ////TODO empty constructor that take
 };
 
 
