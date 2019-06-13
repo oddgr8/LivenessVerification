@@ -3,5 +3,5 @@ project(LivenessVerification)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(testMain testMain.cpp)
+add_executable(testMain testMain.cpp Automata.cpp State.cpp)
 target_link_libraries(testMain /usr/lib/x86_64-linux-gnu/libbdd.so.0)

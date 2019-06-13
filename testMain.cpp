@@ -1,7 +1,7 @@
 //
 // Created by onkar on 17/5/19.
 //
-#include "Automata.cpp"
+#include "Automata.h"
 #include "SymAutomata.cpp"
 #include <string>
 #include <iostream>
@@ -10,8 +10,27 @@ using namespace std;
 
 int main(){
 
-    FormulaTree a("/x1((x&y|z)&(1&2&3))");
-    a.print();
+    SymAutomata a(4, FormulaTree("(x1&x2|x3)|-x4"), FormulaTree("x4"));
+    a.addReadTransition('a', FormulaTree("x1_1&x1_2"));
+    a.addWriteTransition('a', FormulaTree("x1_1&x2_2"));
+    bdd_printall();
+    bdd_printtable(a.reachableStates());
+    cout << (a.isLive() ? "Yes" : "No") << endl;
+
+//    bdd_init(100,100);
+//    bdd_setvarnum(5);
+//    bdd x = bdd_nithvar(0);
+//    bdd y = bdd_ithvar(1);
+//    bdd z = bdd_ithvar(2);
+//    bdd f = x & y;
+//    bdd_printall();
+//    bdd_printtable(f);
+//    bddPair *p = bdd_newpair();
+//    bdd_setpair(p, 0, 2);
+//    bdd_setpair(p, 1, 0);
+//    bdd g = bdd_veccompose(f, p);
+//    bdd_printall();
+//    bdd_printtable(g);
 
 
 

@@ -4,7 +4,7 @@
 #include <map>
 #include <set>
 #include <string>
-#include "State.cpp"
+#include "State.h"
 using namespace std;
 
 #ifndef LIVENESSVERIFICATION_AUTOMATA_H
