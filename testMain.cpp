@@ -10,11 +10,18 @@ using namespace std;
 
 int main(){
 
-    SymAutomata a(4, FormulaTree("(x1&x2|x3)|-x4"), FormulaTree("x4"));
-    a.addReadTransition('a', FormulaTree("x1_1&x1_2"));
+//    SymAutomata a(2, FormulaTree("x1&x2"), FormulaTree("x1&-x2"));
+//    a.addReadTransition('a', FormulaTree("x1_1&x2_1&-x1_2&-x2_2"));
+//    a.addWriteTransition('a', FormulaTree("x1_1&x2_1&x1_2&-x2_2"));
+//    bdd_printall();
+//    cout << (a.isLive() ? "Yes" : "No") << endl;
+
+    SymAutomata a(7, FormulaTree("((x1&x2&x3)|-x4)"), FormulaTree("x5&x6"));
+    a.addReadTransition('a', FormulaTree("x5_1&x6_2"));
     a.addWriteTransition('a', FormulaTree("x1_1&x2_2"));
-    bdd_printall();
-    bdd_printtable(a.reachableStates());
+    a.addReadTransition('b',FormulaTree("T"));
+    //bdd_printall();
+    //bdd_printtable(a.reachableStates());
     cout << (a.isLive() ? "Yes" : "No") << endl;
 
 //    bdd_init(100,100);
@@ -72,12 +79,12 @@ int main(){
 //        A.makeAllStatesFinal();
 //    }
 //
-////    A.print();
-////    cout<<"Reachable States are :";
-////    for ( auto & State : A.getReachableStates()){
-////        cout<<State<<" ";
-////    }
-////    cout<<endl;
+//    A.print();
+//    cout<<"Reachable States are :";
+//    for ( auto & State : A.getReachableStates()){
+//        cout<<State<<" ";
+//    }
+//    cout<<endl;
 //    A.printSize();
 //
 //    time_t time1,time2;

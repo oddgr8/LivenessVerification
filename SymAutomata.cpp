@@ -70,13 +70,14 @@ bdd SymAutomata::reachableStates() {
 
 bool SymAutomata::isLive() {
     bdd r = reachableStates();
-    if(bdd_and(r, finalStates) == bdd_false()){
+    //bdd_printtable(r);
+    if((r & finalStates) == bddfalse){
         return false;
     }
     for (int i = 0; i < varNum; ++i) {
         r = r & bdd_not(bdd_xor(bdd_ithvar(i + startIndex), bdd_ithvar(i + startIndex + 2*varNum)));
     }
-
+    //bdd_printtable(r);
     bdd C = bdd_true();
     while(true){
         bdd C_2 = bdd_veccompose(C, definedToTransition);
@@ -106,6 +107,7 @@ bool SymAutomata::isLive() {
             formulaa = formulaa & bdd_not(bdd_xor(bdd_ithvar(i + startIndex + 2*varNum), bdd_ithvar(i + startIndex + 3*varNum)));
         }
         X = bdd_veccompose(bdd_appex(X & C, formulaa, bddop_and, bdd_makeset(vv, 2*varNum)),transitionToDefined);
+        //bdd_printtable(X);
         while(true){//Find Spost*(Spost(R))
             bdd X_2 = bdd_veccompose(X, definedToTransition);
             for (auto& transition : writeTransitions){
@@ -135,8 +137,10 @@ bool SymAutomata::isLive() {
                 break;
             }
             X = Xnew;
+            //bdd_printtable(X);
         }
         bdd S = r;
+        //bdd_printtable(S);
         while(true){//Find pre*(R)
             bdd S_2 = bdd_veccompose(S, definedToTransition);
             for (auto& transition : writeTransitions){
@@ -166,12 +170,14 @@ bool SymAutomata::isLive() {
                 break;
             }
             S = Snew;
+            //bdd_printtable(S);
         }
         bdd Cnew = S & X;
-        if ((Cnew & bdd_not(C)) == bddfalse) {
+        if ((C & bdd_not(Cnew)) == bddfalse) {
             break;
         }
         C = Cnew;
+        //bdd_printtable(C);
     }
     return C == bddfalse == 0;//return true if C != bddfalse
 }

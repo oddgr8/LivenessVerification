@@ -40,5 +40,7 @@ public:
 
 //// FIXME: Optimisations
 ////    Remove Varnum from arguments and dynamically update it
+////    lettersSeen computation can be optimised by having the index based
+////    for loop outside the range based for loop
 
 #endif //LIVENESSVERIFICATION_SYMAUTOMATA_H

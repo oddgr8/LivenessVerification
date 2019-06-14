@@ -200,7 +200,15 @@ FormulaTreeNode* stringToTree(string expression) {
         return answer;
     }
     if (expression.front() == OPEN_BRACKET) {
-        auto i = expression.find(CLOSE_BRACKET);
+        int i = 0, count = 1;
+        for (auto c : expression.substr(1)){
+            if (count == 0) {
+                break;
+            }
+            i++;
+            if (c == '(') {count++;}
+            else if (c == ')') {count--;}
+        }
         if (i == string::npos) {
             throw std::runtime_error("Invalid Brackets");
         }
@@ -226,6 +234,14 @@ FormulaTreeNode* stringToTree(string expression) {
     }
     if (expression.front() == NOT) {
         answer = new NotNode(stringToTree(expression.substr(1)));
+        return answer;
+    }
+    if (expression == string(1, TRUE)) {
+        answer = new TrueNode;
+        return answer;
+    }
+    if (expression == string(1, FALSE)) {
+        answer = new FalseNode;
         return answer;
     }
     answer = new VariableNode(expression);
