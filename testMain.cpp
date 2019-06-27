@@ -10,36 +10,53 @@ using namespace std;
 
 int main(){
 
-//    SymAutomata a(2, FormulaTree("x1&x2"), FormulaTree("x1&-x2"));
-//    a.addReadTransition('a', FormulaTree("x1_1&x2_1&-x1_2&-x2_2"));
-//    a.addWriteTransition('a', FormulaTree("x1_1&x2_1&x1_2&-x2_2"));
-//    bdd_printall();
+
+    int varNum;
+    cin>>varNum;
+    string i,f;
+    cin>>i;
+    cin>>f;
+    SymAutomata test(varNum, FormulaTree(i), FormulaTree(f));
+
+    int rt,wt;
+    cin>>rt>>wt;
+    char c;
+    string t;
+    for (int j = 0; j < rt; ++j) {
+        cin>>c;
+        cin>>t;
+        test.addReadTransition(c, FormulaTree(t));
+    }
+    for (int j = 0; j < wt; ++j) {
+        cin>>c;
+        cin>>t;
+        test.addWriteTransition(c, FormulaTree(t));
+    }
+    cout<<"No of variabes is "<<varNum<<endl;
+    cout<<"No of read transitions is "<<rt<<endl;
+    cout<<"No of write transitions is "<<wt<<endl;
+    
+    time_t time1,time2;
+    time(&time1);
+    cout<< (test.isLive() ? "Yes" : "No") <<endl;
+    time(&time2);
+    cout<<"Time required to verify Symbolic Liveness: "<<difftime(time2, time1)<<" seconds"<<endl<<endl;
+
+
+
+//    SymAutomata b(2, FormulaTree("x1&x2"), FormulaTree("x1&-x2"));
+//    b.addReadTransition('a', FormulaTree("x1_1&x2_1&-x1_2&-x2_2"));
+//    b.addWriteTransition('a', FormulaTree("x1_1&x2_1&x1_2&-x2_2"));
+////    bdd_printall();
+//    cout << (b.isLive() ? "Yes" : "No") << endl;
+//
+//    SymAutomata a(7, FormulaTree("((x1&x2&x3)|-x4)"), FormulaTree("x5&x6"));
+//    a.addReadTransition('a', FormulaTree("x5_1&x6_2"));
+//    a.addWriteTransition('a', FormulaTree("x1_1&x2_2"));
+//    a.addReadTransition('b',FormulaTree("T"));
+//    //bdd_printall();
+//    //bdd_printtable(a.reachableStates());
 //    cout << (a.isLive() ? "Yes" : "No") << endl;
-
-    SymAutomata a(7, FormulaTree("((x1&x2&x3)|-x4)"), FormulaTree("x5&x6"));
-    a.addReadTransition('a', FormulaTree("x5_1&x6_2"));
-    a.addWriteTransition('a', FormulaTree("x1_1&x2_2"));
-    a.addReadTransition('b',FormulaTree("T"));
-    //bdd_printall();
-    //bdd_printtable(a.reachableStates());
-    cout << (a.isLive() ? "Yes" : "No") << endl;
-
-//    bdd_init(100,100);
-//    bdd_setvarnum(5);
-//    bdd x = bdd_nithvar(0);
-//    bdd y = bdd_ithvar(1);
-//    bdd z = bdd_ithvar(2);
-//    bdd f = x & y;
-//    bdd_printall();
-//    bdd_printtable(f);
-//    bddPair *p = bdd_newpair();
-//    bdd_setpair(p, 0, 2);
-//    bdd_setpair(p, 1, 0);
-//    bdd g = bdd_veccompose(f, p);
-//    bdd_printall();
-//    bdd_printtable(g);
-
-
 
 //    Automata A;
 //    char input[100];
