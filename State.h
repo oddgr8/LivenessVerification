@@ -2,6 +2,7 @@
 // Created by onkar on 17/5/19.
 //
 #include <set>
+#include <string>
 using namespace std;
 
 #ifndef LIVENESSVERIFICATION_STATE_H
