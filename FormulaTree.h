@@ -5,6 +5,7 @@
 #ifndef LIVENESSVERIFICATION_FORMULATREE_H
 #define LIVENESSVERIFICATION_FORMULATREE_H
 #include <string>
+#include <iostream>
 using namespace std;
 
 const char OPEN_BRACKET = '(';

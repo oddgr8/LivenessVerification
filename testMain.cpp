@@ -2,7 +2,7 @@
 // Created by onkar on 17/5/19.
 //
 #include "Automata.h"
-#include "SymAutomata.cpp"
+#include "SymAutomata.h"
 #include <string>
 #include <iostream>
 #include <ctime>
@@ -10,54 +10,14 @@ using namespace std;
 
 int main(){
 
-
-    int varNum;
-    cin>>varNum;
-    string i,f;
-    cin>>i;
-    cin>>f;
-    SymAutomata test(varNum, FormulaTree(i), FormulaTree(f));
-
-    int rt,wt;
-    cin>>rt>>wt;
-    char c;
-    string t;
-    for (int j = 0; j < rt; ++j) {
-        cin>>c;
-        cin>>t;
-        test.addReadTransition(c, FormulaTree(t));
-    }
-    for (int j = 0; j < wt; ++j) {
-        cin>>c;
-        cin>>t;
-        test.addWriteTransition(c, FormulaTree(t));
-    }
-    cout<<"No of variabes is "<<varNum<<endl;
-    cout<<"No of read transitions is "<<rt<<endl;
-    cout<<"No of write transitions is "<<wt<<endl;
-    
-    time_t time1,time2;
-    time(&time1);
-    cout<< (test.isLive() ? "Yes" : "No") <<endl;
-    time(&time2);
-    cout<<"Time required to verify Symbolic Liveness: "<<difftime(time2, time1)<<" seconds"<<endl<<endl;
+////GNU G++ Comilation command is:
+//// g++ testMain.cpp Automata.cpp SymAutomata.cpp FormulaTree.cpp State.cpp
 
 
-
-//    SymAutomata b(2, FormulaTree("x1&x2"), FormulaTree("x1&-x2"));
-//    b.addReadTransition('a', FormulaTree("x1_1&x2_1&-x1_2&-x2_2"));
-//    b.addWriteTransition('a', FormulaTree("x1_1&x2_1&x1_2&-x2_2"));
-////    bdd_printall();
-//    cout << (b.isLive() ? "Yes" : "No") << endl;
+//////////////////////
+//// The following code reads from stdin in BA format and generates Automata A
+//////////////////////
 //
-//    SymAutomata a(7, FormulaTree("((x1&x2&x3)|-x4)"), FormulaTree("x5&x6"));
-//    a.addReadTransition('a', FormulaTree("x5_1&x6_2"));
-//    a.addWriteTransition('a', FormulaTree("x1_1&x2_2"));
-//    a.addReadTransition('b',FormulaTree("T"));
-//    //bdd_printall();
-//    //bdd_printtable(a.reachableStates());
-//    cout << (a.isLive() ? "Yes" : "No") << endl;
-
 //    Automata A;
 //    char input[100];
 //    bool atInitial = true,firstInput =true, foundFinalState = false;
@@ -96,28 +56,53 @@ int main(){
 //        A.makeAllStatesFinal();
 //    }
 //
-//    A.print();
-//    cout<<"Reachable States are :";
-//    for ( auto & State : A.getReachableStates()){
-//        cout<<State<<" ";
-//    }
-//    cout<<endl;
-//    A.printSize();
+//////////////////////
+//// Code finished
+//////////////////////
+
+
+
+//////////////////////
+////The following code reads from stdin in the given format and generates Symbolic Automata A
+//// Format is
+//// <no of variables as int>
+//// <formula for initial states as string>
+//// <formula for final states as string>
+//// <no of read transitions as int>
+//// <no of write transitions as int>
+//// For each read transition:
+////    <label of transition as char>
+////    <formula for transitions as string>
+//// For each write transition:
+////    <label of transition as char>
+////    <formula for transitions as string>
+//////////////////////
 //
-//    time_t time1,time2;
-//    time(&time1);
-//    cout<<"Is A Live?";
-//    if(A.isLive()){
-//        cout<<"Yes"<<endl;
+//    int varNum;
+//    cin>>varNum;
+//    string i,f;
+//    cin>>i;
+//    cin>>f;
+//    SymAutomata A(varNum, FormulaTree(i), FormulaTree(f));
+//
+//    int rt,wt;
+//    cin>>rt>>wt;
+//    char c;
+//    string t;
+//    for (int j = 0; j < rt; ++j) {
+//        cin>>c;
+//        cin>>t;
+//        A.addReadTransition(c, FormulaTree(t));
 //    }
-//    else{
-//        cout<<"No"<<endl;
+//    for (int j = 0; j < wt; ++j) {
+//        cin>>c;
+//        cin>>t;
+//        A.addWriteTransition(c, FormulaTree(t));
 //    }
-//    time(&time2);
-//    cout<<"Time required to verify Liveness: "<<difftime(time2, time1)<<" seconds"<<endl<<endl;
-
-
-
+//
+//////////////////////
+//// Code finished
+//////////////////////
 
     return 0;
 }

@@ -6,6 +6,8 @@
 #include <utility>
 #include <algorithm>
 #include <iostream>
+#include <fstream>
+
 using namespace std;
 
 
@@ -359,4 +361,45 @@ void Automata::printSize() {
     cout<<"No. of final States are: "<<finalStates.size()<<endl;
     cout<<"No. of read transitions are: "<<rdTransitions<<endl;
     cout<<"No. of write transitions are: "<<wrTransitions<<endl;
+}
+
+Automata readFromStream(istream &file) {
+    Automata A;
+    char input[100];
+    bool atInitial = true,firstInput =true, foundFinalState = false;
+    while(file.getline(input,100)){
+        string s(input);
+        if(s=="input_over"){
+            break;
+        }
+        if(s.find(',')==string::npos){
+            if(atInitial){
+                A.addInitialState(s);
+            }
+            else{
+                A.addFinalState(s);
+                foundFinalState = true;
+            }
+        }
+        else{
+            atInitial = false;
+            int c = s.find(','), t = s.find("->");
+            string src = s.substr(c+1,t-c-1);
+            string dst = s.substr(t+2);
+            if(s[0]=='!'){
+                A.addWriteTransition(src, dst, s[1]);
+            }
+            else if(s[0]=='?'){
+                A.addReadTransition(src, dst, s[1]);
+            }
+            if(firstInput){
+                A.addInitialState(src);
+            }
+        }
+        firstInput = false;
+    }
+    if(!foundFinalState){
+        A.makeAllStatesFinal();
+    }
+    return A;
 }

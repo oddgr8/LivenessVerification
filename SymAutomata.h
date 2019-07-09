@@ -5,8 +5,9 @@
 #ifndef LIVENESSVERIFICATION_SYMAUTOMATA_H
 #define LIVENESSVERIFICATION_SYMAUTOMATA_H
 #include <bdd.h>
-#include "FormulaTree.cpp"
+#include "FormulaTree.h"
 #include <map>
+#include <set>
 using namespace std;
 
 const auto reorderMethod = BDD_REORDER_WIN2ITE;
@@ -31,11 +32,28 @@ class SymAutomata {
     bdd FTNtoBDD(FormulaTreeNode* root);
     bdd FTNtoTBDD(FormulaTreeNode* root);//separates var_1 and var_2
 public:
-    SymAutomata(int varNum, const FormulaTree& I, const FormulaTree& F);
+    SymAutomata(int numberOfVariables, const FormulaTree& initialStates, const FormulaTree& finalStates);
     void addReadTransition(char letter, const FormulaTree& formula);
     void addWriteTransition(char letter, const FormulaTree& formula);
     bdd reachableStates();
     bool isLive();
+
+//// Format for formulae:
+//// No spaces
+//// Variables can be strings
+//// Brackets must be balanced
+//// Quantifier must be followed by quantified variable must be followed by open bracket
+//// In transition formulae, src variable is denoted by suffix '_1' and dst by suffix '_2'
+////    OPEN_BRACKET = '(';
+////    CLOSE_BRACKET = ')';
+////    TRUE = 'T';
+////    FALSE = 'F';
+////    AND = '&';
+////    OR = '|';
+////    NOT = '-';
+////    EXISTS = '/';
+////    FORALL = '?';
+
 };
 
 //// FIXME: Optimisations
